@@ -1,0 +1,50 @@
+# System format.
+FORMAT 	= -m64
+
+# Target executable to be built.
+TARGET 	= bulk_read
+
+# Source files to be used.
+SOURCES = bulk_read.cpp
+
+# Directories for Dynamixel library and generated objects.
+DIR_DXL = /usr/local/include/dynamixel_sdk
+DIR_OBJ = .objects
+
+# Compiler options:
+# generate debugging information
+# optimaize for code size and execution time
+# turn on compiler warning flags
+# build for the right system format
+# include Dynamixel library path
+CX 		= g++
+CXFLAGS = -m64 -g -O3 -Wall $(FORMAT) -I $(DIR_DXL)
+
+# All lines below are copied from example.
+
+LNKCC       = $(CX)
+LNKFLAGS    = $(CXFLAGS)
+
+INCLUDES   += -I$(DIR_DXL)
+LIBRARIES  += -ldxl_x64_cpp
+LIBRARIES  += -lrt
+
+OBJECTS  = $(addsuffix .o,$(addprefix $(DIR_OBJ)/,$(basename $(notdir $(SOURCES)))))
+
+$(TARGET): make_directory $(OBJECTS)
+	$(LNKCC) $(LNKFLAGS) $(OBJECTS) -o $(TARGET) $(LIBRARIES)
+
+all: $(TARGET)
+
+clean:
+	rm -rf $(TARGET) $(DIR_OBJ) core *~ *.a *.so *.lo
+
+make_directory:
+	mkdir -p $(DIR_OBJ)/
+
+$(DIR_OBJ)/%.o: %.c
+	$(CC) $(CCFLAGS) -c $? -o $@
+
+$(DIR_OBJ)/%.o: %.cpp
+	$(CX) $(CXFLAGS) -c $? -o $@
+	

@@ -15,4 +15,6 @@ To do:
 	Relate functions to macros.
 	Refine macros.
 	Change motor ID macros from number to robot body joints.
-	
+	Study dynamixel sdk api.
+	Finish component diagram for api.
+	Implement functions in component diagram.

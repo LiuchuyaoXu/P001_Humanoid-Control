@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_OPptYHgAEemzHvmKB3NzMQ" name="archt">
+  <packageImport xmi:type="uml:PackageImport" xmi:id="_ObKZ0HgAEemzHvmKB3NzMQ">
+    <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
+  </packageImport>
+  <packagedElement xmi:type="uml:Component" xmi:id="_npSHwHgDEemzHvmKB3NzMQ" name="dynamixel_sdk"/>
+  <packagedElement xmi:type="uml:Component" xmi:id="_phwFQHgDEemzHvmKB3NzMQ" name="motor_control" visibility="package">
+    <packagedElement xmi:type="uml:Dependency" xmi:id="_tnYd4HgDEemzHvmKB3NzMQ" client="_phwFQHgDEemzHvmKB3NzMQ" supplier="_npSHwHgDEemzHvmKB3NzMQ"/>
+    <packagedElement xmi:type="uml:Component" xmi:id="_1Pt2UHgFEemzHvmKB3NzMQ" name="uint32_t set_position(uint32_t motor_id, uint32_t percent)"/>
+    <packagedElement xmi:type="uml:Component" xmi:id="_Ck-8YHgIEemzHvmKB3NzMQ" name="uint32_t initilize ()"/>
+    <packagedElement xmi:type="uml:Component" xmi:id="_FecAUHgJEemzHvmKB3NzMQ" name="uint32_t shutdown()"/>
+    <packagedElement xmi:type="uml:Component" xmi:id="_Jnti0HgJEemzHvmKB3NzMQ" name="uint32_t read_speed(uint32_t motor_id)"/>
+    <packagedElement xmi:type="uml:Component" xmi:id="_Wuyt0HgJEemzHvmKB3NzMQ" name="uint32_t read_torque(uint32_t motor_id)"/>
+    <packagedElement xmi:type="uml:Component" xmi:id="_bnhXUHgJEemzHvmKB3NzMQ" name="uint32t_t read_temperature(uint32_t motor_id)"/>
+  </packagedElement>
+</uml:Model>

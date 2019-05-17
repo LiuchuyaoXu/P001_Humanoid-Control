@@ -4,13 +4,13 @@
     <importedPackage xmi:type="uml:Model" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#_0"/>
   </packageImport>
   <packagedElement xmi:type="uml:Interface" xmi:id="_xV28sHixEemtz-fHLSmLPw" name="motor_control.h">
-    <ownedOperation xmi:type="uml:Operation" xmi:id="_1-y2sHixEemtz-fHLSmLPw" name="read_alarm"/>
     <ownedOperation xmi:type="uml:Operation" xmi:id="_4w8OMHixEemtz-fHLSmLPw" name="enable_torque"/>
     <ownedOperation xmi:type="uml:Operation" xmi:id="_AC8cMHiyEemtz-fHLSmLPw" name="set_goal_position"/>
     <ownedOperation xmi:type="uml:Operation" xmi:id="_B5FecHiyEemtz-fHLSmLPw" name="set_moving_speed"/>
     <ownedOperation xmi:type="uml:Operation" xmi:id="_QiFIIHiyEemtz-fHLSmLPw" name="read_position"/>
     <ownedOperation xmi:type="uml:Operation" xmi:id="_Hzej0HizEemtz-fHLSmLPw" name="read_speed"/>
     <ownedOperation xmi:type="uml:Operation" xmi:id="_JKvRsHizEemtz-fHLSmLPw" name="read_load"/>
+    <ownedOperation xmi:type="uml:Operation" xmi:id="_1-y2sHixEemtz-fHLSmLPw" name="read_error"/>
     <ownedOperation xmi:type="uml:Operation" xmi:id="_LoP18HizEemtz-fHLSmLPw" name="read_supply_voltage"/>
     <ownedOperation xmi:type="uml:Operation" xmi:id="_NE-5sHizEemtz-fHLSmLPw" name="read_temperature"/>
   </packagedElement>

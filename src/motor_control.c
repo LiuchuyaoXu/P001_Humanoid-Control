@@ -149,7 +149,7 @@ int main()
     do {
         dxl_current_position = read_current_position(port_number, AX_ID_DXL3);
         DEBUG_PRINT("[ID:%03d] GoalPos:%03d  PresPos:%03d\n", AX_ID_DXL3, goal_position, dxl_current_position);
-    } while (abs(goal_position - dxl_current_position) > 10);
+    } while ((abs(goal_position - dxl_current_position) > 10));
 
     diable_torque(port_number, AX_ID_DXL3);
     close_port(port_number);

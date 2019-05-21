@@ -23,7 +23,7 @@
 #---------------------------------------------------------------------
 
 # *** ENTER THE TARGET NAME HERE ***
-TARGET      = test
+TARGET      = motor_control
 
 # important directories used by assorted rules and other variables
 DIR_DXL    = /usr/local
@@ -48,7 +48,7 @@ LIBRARIES  += -lrt
 #---------------------------------------------------------------------
 # Files
 #---------------------------------------------------------------------
-SOURCES = test.c \
+SOURCES = motor_control.c \
     # *** OTHER SOURCES GO HERE ***
 
 OBJECTS  = $(addsuffix .o,$(addprefix $(DIR_OBJS)/,$(basename $(notdir $(SOURCES)))))

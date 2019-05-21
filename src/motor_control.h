@@ -10,7 +10,7 @@
 //                   http://emanual.robotis.com/docs/en/dxl/ax/ax-12a/#control-table.
 
 
-#include <stdint.h>
+#include <stdlib.h>
 #include <stdbool.h>
 
 #include "/usr/local/include/dynamixel_sdk/dynamixel_sdk.h"
@@ -87,6 +87,33 @@
 #define AX_ADDR_EEPROM_LOCK             47  // R/W. EEPROM locked/unlocked.
 #define AX_ADDR_PUNCH                   48  // R/W. Minimum current to drive the motor.
 
+// Motor EEPROM control table data default values.
+#define AX_DEFAULT_MODEL_NUMBER         12
+#define AX_DEFAULT_MOTOR_ID             1
+#define AX_DEFAULT_BAUD_RATE            1 
+#define AX_DEFAULT_RETURN_DELAY_TIME    250
+#define AX_DEFAULT_CW_ANGLE_LIMIT       0
+#define AX_DEFAULT_CCW_ANGLE_LIMIT      1023 
+#define AX_DEFAULT_TEMPERATURE_LIMIT    70
+#define AX_DEFAULT_MIN_VOLTAGE_LIMIT    60
+#define AX_DEFAULT_MAX_VOLTAGE_LIMIT    140 
+#define AX_DEFAULT_MAX_TORQUE           1023
+#define AX_DEFAULT_STATUS_RETURN_LEVEL  2
+#define AX_DEFAULT_ALARM_LED            36  
+#define AX_DEFAULT_ALARM_SHUTDOWN       36
+
+// Motor RAM control table data default values.
+#define AX_DEFAULT_TORQUE_ENABLE        0 
+#define AX_DEFAULT_STATUS_LED           0  
+#define AX_DEFAULT_CW_MARGIN            1  
+#define AX_DEFAULT_CCW_MARGIN           1 
+#define AX_DEFAULT_CW_SLOPE             32  
+#define AX_DEFAULT_CCW_SLOPE            32
+#define AX_DEFAULT_REGISTERED           0
+#define AX_DEFAULT_MOVING               0 
+#define AX_DEFAULT_EEPROM_LOCK          0  
+#define AX_DEFAULT_PUNCH                32 
+
 /*** SHOULD BE CHANGED TO LEFT_KNEE, LEFT_ANKLE, RIGHT_THIGH, ETC. ***/
 // Motor IDs.
 #define AX_ID_DXL1     1
@@ -103,33 +130,39 @@
 // Other settings.
 #define AX_DEVICE_PORT      "/dev/ttyUSB0"  // Motor port on Linux.
 #define AX_DEVICE_BAUDRATE  1000000         // Motor communication baudrate.
+#define AX_DEVICE_PROTOCOL  1.0             // Motor protocol version.
+
+#define AX_TORQUE_ENABLE    1
+#define AX_TORQUE_DISABLE   0
 
 // Function prototypes.
 
-// Arguments    :   
-// Return       :
-// Description  :
-bool open_port();
+// Arguments    :   void
+// Return       :   int port_number
+// Description  :   Open the port for communication with the motor.
+//                  Set the baudrate of the port.
+//                  Return a port number to be used for other functions.
+int open_port();
+
+// Arguments    :   int port_number
+// Return       :   void
+// Description  :   Close the port specified by the port number.
+void close_port(int port_number);
 
 // Arguments    :   
 // Return       :
 // Description  :
-void close_port();
+bool enable_torque(int port_number, int ax_id);
 
 // Arguments    :   
 // Return       :
 // Description  :
-bool enable_torque();
+void diable_torque(int port_number, int ax_id);
 
 // Arguments    :   
 // Return       :
 // Description  :
-void diable_torque();
-
-// Arguments    :   
-// Return       :
-// Description  :
-void set_goal_position();
+void set_goal_position(int port_number, int ax_id, int percentage);
 
 // Arguments    :   
 // Return       :
@@ -139,7 +172,7 @@ void set_goal_speed();
 // Arguments    :   
 // Return       :
 // Description  :
-void read_current_position();
+uint16_t read_current_position(int port_number, int ax_id);
 
 // Arguments    :   
 // Return       :

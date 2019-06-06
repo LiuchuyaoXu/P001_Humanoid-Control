@@ -2,8 +2,7 @@
 // Author       :   Liuchuyao Xu (Raymond)
 // Description  :   Provide interface functions for controlling Dynamixel AX-12A motors.
 //                  Use interface functions provided by DynamixelSDK.
-// Abbreviations:   ax      AX-12A
-//                  comm    communication
+// Abbreviations:   comm    communication
 
 #include "motor_control.h"
 

@@ -90,7 +90,7 @@ void disable_torque(int port_number, int ax_id)
 //              Percent of maximum allowed position.
 // Return:
 // Description: Set the goal position for the motor specifed.
-void set_goal_position(int port_number, int ax_id, int percent)
+void write_goal_position(int port_number, int ax_id, int percent)
 {
     int position = percent * AX_DEFAULT_CCW_ANGLE_LIMIT / 100;
     write2ByteTxRx(port_number, AX_DEVICE_PROTOCOL, ax_id, AX_ADDR_GOAL_POSITION, position);
@@ -101,7 +101,7 @@ void set_goal_position(int port_number, int ax_id, int percent)
 // Arguments:
 // Return:
 // Description:
-void set_goal_speed()
+void write_goal_speed()
 {
 
 }
@@ -161,20 +161,18 @@ void read_supply_voltage()
 
 int main()
 {
+    // Initialise serial port.
     int port_number = open_port();
     if(port_number == -1) {
         printf("Failed, program terminates!\n");
         return -1;
     }
-    if(!enable_torque(port_number, AX_ID_DXL3)) {
-        printf("Failed, program terminates!\n");
-        return -1;
-    }
 
+    enable_torque(port_number, AX_ID_DXL3);
     int dxl_current_position = 0;
     int goal_position = 500;
     int goal_position_percentage = goal_position / AX_DEFAULT_CCW_ANGLE_LIMIT;
-    set_goal_position(port_number, AX_ID_DXL3, goal_position_percentage);
+    write_goal_position(port_number, AX_ID_DXL3, goal_position_percentage);
     do {
         dxl_current_position = read_current_position(port_number, AX_ID_DXL3);
         printf("[Motor ID:%03d] Goal Position:%03d  Current Position:%03d\n", AX_ID_DXL3, goal_position, dxl_current_position);

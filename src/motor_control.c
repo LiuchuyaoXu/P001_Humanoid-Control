@@ -6,7 +6,6 @@
 //                  comm    communication
 // Notes        :   Check the header file for descriptions of functions.
 
-#include "debug.h"
 #include "motor_control.h"
 
 int open_port()
@@ -14,19 +13,13 @@ int open_port()
     int port_number = portHandler(AX_DEVICE_PORT);
     packetHandler();
 
-    if(openPort(port_number)) {
-        DEBUG_PRINT("%s\n", "Successful, opened the port!");
-	}
-	else {
-		DEBUG_PRINT("%s\n", "Failed, did not open the port!");
+	if (!openPort(port_number)) {
+		printf("Failed, could not open the port!\n");
         return false;
 	}
 
-	if (setBaudRate(port_number, AX_DEVICE_BAUDRATE)) {
-		DEBUG_PRINT("%s\n", "Successful, set the baudrate!");
-	}
-	else {
-		DEBUG_PRINT("%s\n", "Failed, did not set the baudrate!");
+	if (!setBaudRate(port_number, AX_DEVICE_BAUDRATE)) {
+		printf("Failed, could not set the baudrate!\n");
 		return false;
 	}
 
@@ -42,31 +35,37 @@ bool enable_torque(int port_number, int ax_id)
 {
     uint8_t dxl_error = 0;
     int dxl_comm_result = COMM_TX_FAIL;
+
     write1ByteTxRx(port_number, AX_DEVICE_PROTOCOL, ax_id, AX_ADDR_TORQUE_ENABLE, AX_TORQUE_ENABLE);
-    if ((dxl_comm_result = getLastTxRxResult(port_number, AX_DEVICE_PROTOCOL)) != COMM_SUCCESS) {
-		DEBUG_PRINT("%s\n", getTxRxResult(AX_DEVICE_PROTOCOL, dxl_comm_result));
+
+    dxl_comm_result = getLastTxRxResult(port_number, AX_DEVICE_PROTOCOL);
+    dxl_error = getLastRxPacketError(port_number, AX_DEVICE_PROTOCOL);
+    if (dxl_comm_result != COMM_SUCCESS) {
+		printf("%s\n", getTxRxResult(AX_DEVICE_PROTOCOL, dxl_comm_result));
         return false;
 	}
-	else if ((dxl_error = getLastRxPacketError(port_number, AX_DEVICE_PROTOCOL)) != 0) {
-		DEBUG_PRINT("%s\n", getRxPacketError(AX_DEVICE_PROTOCOL, dxl_error));
+	if (dxl_error != 0) {
+		printf("%s\n", getRxPacketError(AX_DEVICE_PROTOCOL, dxl_error));
         return false;
 	}
-	else {
-		DEBUG_PRINT("%s\n", "Successful, enabled dynamixel motor torque!");
-        return true;
-	}
+
+    return true;
 }
 
-void diable_torque(int port_number, int ax_id)
+void disable_torque(int port_number, int ax_id)
 {
     uint8_t dxl_error = 0;
     int dxl_comm_result = COMM_TX_FAIL;
+
     write1ByteTxRx(port_number, AX_DEVICE_PROTOCOL, ax_id, AX_ADDR_TORQUE_ENABLE, AX_TORQUE_DISABLE);
-    if ((dxl_comm_result = getLastTxRxResult(port_number, AX_DEVICE_PROTOCOL)) != COMM_SUCCESS) {
-		DEBUG_PRINT("%s\n", getTxRxResult(AX_DEVICE_PROTOCOL, dxl_comm_result));
+
+    dxl_comm_result = getLastTxRxResult(port_number, AX_DEVICE_PROTOCOL);
+    dxl_error = getLastRxPacketError(port_number, AX_DEVICE_PROTOCOL);
+    if (dxl_comm_result != COMM_SUCCESS) {
+		printf("%s\n", getTxRxResult(AX_DEVICE_PROTOCOL, dxl_comm_result));
 	}
-	else if ((dxl_error = getLastRxPacketError(port_number, AX_DEVICE_PROTOCOL)) != 0) {
-		DEBUG_PRINT("%s\n", getRxPacketError(AX_DEVICE_PROTOCOL, dxl_error));
+	if (dxl_error != 0) {
+		printf("%s\n", getRxPacketError(AX_DEVICE_PROTOCOL, dxl_error));
 	}
 }
 
@@ -75,12 +74,16 @@ void set_goal_position(int port_number, int ax_id, int percentage)
     uint8_t dxl_error = 0;
     int dxl_comm_result = COMM_TX_FAIL;
     int position = percentage * AX_DEFAULT_CCW_ANGLE_LIMIT / 100;
+
     write2ByteTxRx(port_number, AX_DEVICE_PROTOCOL, ax_id, AX_ADDR_GOAL_POSITION, position);
-    if ((dxl_comm_result = getLastTxRxResult(port_number, AX_DEVICE_PROTOCOL)) != COMM_SUCCESS) {
-      	DEBUG_PRINT("%s\n", getTxRxResult(AX_DEVICE_PROTOCOL, dxl_comm_result));
+
+    dxl_comm_result = getLastTxRxResult(port_number, AX_DEVICE_PROTOCOL);
+    dxl_error = getLastRxPacketError(port_number, AX_DEVICE_PROTOCOL);
+    if (dxl_comm_result != COMM_SUCCESS) {
+      	printf("%s\n", getTxRxResult(AX_DEVICE_PROTOCOL, dxl_comm_result));
     }
-    else if ((dxl_error = getLastRxPacketError(port_number, AX_DEVICE_PROTOCOL)) != 0) {
-     	DEBUG_PRINT("%s\n", getRxPacketError(AX_DEVICE_PROTOCOL, dxl_error));
+    if (dxl_error != 0) {
+     	printf("%s\n", getRxPacketError(AX_DEVICE_PROTOCOL, dxl_error));
     }
 }
 
@@ -94,12 +97,16 @@ uint16_t read_current_position(int port_number, int ax_id)
     uint16_t current_position = 0;
     uint8_t dxl_error = 0;
     int dxl_comm_result = COMM_TX_FAIL;
+
     current_position = read2ByteTxRx(port_number, AX_DEVICE_PROTOCOL, ax_id, AX_ADDR_PRESENT_POSITION);
-    if ((dxl_comm_result = getLastTxRxResult(port_number, AX_DEVICE_PROTOCOL)) != COMM_SUCCESS) {
-        DEBUG_PRINT("%s\n", getTxRxResult(AX_DEVICE_PROTOCOL, dxl_comm_result));
+
+    dxl_comm_result = getLastTxRxResult(port_number, AX_DEVICE_PROTOCOL);
+    dxl_error = getLastRxPacketError(port_number, AX_DEVICE_PROTOCOL);
+    if (dxl_comm_result != COMM_SUCCESS) {
+        printf("%s\n", getTxRxResult(AX_DEVICE_PROTOCOL, dxl_comm_result));
     }
-    else if ((dxl_error = getLastRxPacketError(port_number, AX_DEVICE_PROTOCOL)) != 0) {
-        DEBUG_PRINT("%s\n", getRxPacketError(AX_DEVICE_PROTOCOL, dxl_error));
+    if (dxl_error != 0) {
+        printf("%s\n", getRxPacketError(AX_DEVICE_PROTOCOL, dxl_error));
     }
 
     return current_position;
@@ -134,12 +141,12 @@ int main()
 {
     int port_number = open_port();
     if(!port_number) {
-        DEBUG_PRINT("%s\n", "Program failed!");
-        return 0;
+        printf("Failed, program terminates!\n");
+        return -1;
     }
     if(!enable_torque(port_number, AX_ID_DXL3)) {
-        DEBUG_PRINT("%s\n", "Program failed!");
-        return 0;
+        printf("Failed, program terminates!\n");
+        return -1;
     }
 
     int dxl_current_position = 0;
@@ -148,11 +155,10 @@ int main()
     set_goal_position(port_number, AX_ID_DXL3, goal_position_percentage);
     do {
         dxl_current_position = read_current_position(port_number, AX_ID_DXL3);
-        DEBUG_PRINT("[ID:%03d] GoalPos:%03d  PresPos:%03d\n", AX_ID_DXL3, goal_position, dxl_current_position);
+        printf("[ID:%03d] GoalPos:%03d  PresPos:%03d\n", AX_ID_DXL3, goal_position, dxl_current_position);
     } while ((abs(goal_position - dxl_current_position) > 10));
 
-    diable_torque(port_number, AX_ID_DXL3);
+    disable_torque(port_number, AX_ID_DXL3);
     close_port(port_number);
-
-    return 0;
+    return -1;
 }

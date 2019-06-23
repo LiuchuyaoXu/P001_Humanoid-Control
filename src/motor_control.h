@@ -115,18 +115,19 @@
 #define AX_DEFAULT_EEPROM_LOCK          0
 #define AX_DEFAULT_PUNCH                32
 
-/*** SHOULD BE CHANGED TO LEFT_KNEE, LEFT_ANKLE, RIGHT_THIGH, ETC. ***/
 // Motor IDs.
-#define AX_ID_DXL1     1
-#define AX_ID_DXL2     2
-#define AX_ID_DXL3     3
-#define AX_ID_DXL4     4
-#define AX_ID_DXL5     5
-#define AX_ID_DXL6     6
-#define AX_ID_DXL7     7
-#define AX_ID_DXL8     8
-#define AX_ID_DXL9     9
-#define AX_ID_DXL10    10
+#define AX_ID_RIGHT_FOOT_ROLL       17
+#define AX_ID_RIGHT_FOOT_PITCH      15
+#define AX_ID_RIGHT_KNEE            13
+#define AX_ID_RIGHT_THIGH_ROLL      9
+#define AX_ID_RIGHT_THIGH_PITCH     11
+#define AX_ID_RIGHT_HIP             7
+#define AX_ID_LEFT_FOOT_ROLL        18
+#define AX_ID_LEFT_FOOT_PITCH       16
+#define AX_ID_LEFT_KNEE             14
+#define AX_ID_LEFT_THIGH_ROLL       10
+#define AX_ID_LEFT_THIGH_PITCH      12
+#define AX_ID_LEFT_HIP              8
 
 // Other settings.
 #define AX_DEVICE_PORT      "/dev/ttyUSB0"  // Motor port on Linux.

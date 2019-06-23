@@ -130,7 +130,7 @@
 #define AX_ID_LEFT_HIP              8
 
 // Other settings.
-#define AX_DEVICE_PORT      "/dev/ttyUSB0"  // Motor port on Linux.
+#define AX_DEVICE_PORT      "/dev/ttyUSB1"  // Motor port on Linux.
 #define AX_DEVICE_BAUDRATE  1000000         // Motor communication baudrate.
 #define AX_DEVICE_PROTOCOL  1.0             // Motor protocol version.
 

@@ -9,7 +9,19 @@
 
 // Evil global variables.
 int port_number = 0;
-int motor_positions[20] = {};
+int joint_degrees[20] = {};
+int joints[12] = {  AX_ID_RIGHT_FOOT_ROLL,
+                    AX_ID_RIGHT_FOOT_PITCH,
+                    AX_ID_RIGHT_KNEE,
+                    AX_ID_RIGHT_THIGH_ROLL,
+                    AX_ID_RIGHT_THIGH_PITCH,
+                    AX_ID_RIGHT_HIP,
+                    AX_ID_LEFT_FOOT_ROLL,
+                    AX_ID_LEFT_FOOT_PITCH,
+                    AX_ID_LEFT_KNEE,
+                    AX_ID_LEFT_THIGH_ROLL,
+                    AX_ID_LEFT_THIGH_PITCH,
+                    AX_ID_LEFT_HIP};
 
 // Arguments:
 // Return:      True if successful.
@@ -90,11 +102,14 @@ void disable_torque(int ax_id)
 }
 
 // Arguments:   Motor ID.
-//              Goal position.
+//              Goal position in degrees.
 // Return:
 // Description: Set the goal position for the motor specifed.
-void write_position(int ax_id, int position)
+void write_position(int ax_id, int joint_degrees)
 {
+    int motor_degrees = 150 - joint_degrees;
+    float position_float = motor_degrees / 300.0 * 1023.0;
+    int position = position_float;
     write2ByteTxRx(port_number, AX_DEVICE_PROTOCOL, ax_id, AX_ADDR_GOAL_POSITION, position);
 
     check_error();
@@ -163,21 +178,21 @@ void read_voltage()
 // Arguments:
 // Return:
 // Description:
-void robot_stand()
+void robot_straight()
 {
-    motor_positions[AX_ID_RIGHT_FOOT_ROLL] = 516;
-    motor_positions[AX_ID_RIGHT_FOOT_PITCH] = 192;
-    motor_positions[AX_ID_RIGHT_KNEE] = 824;
-    motor_positions[AX_ID_RIGHT_THIGH_ROLL] = 513;
-    motor_positions[AX_ID_RIGHT_THIGH_PITCH] = 528;
-    motor_positions[AX_ID_RIGHT_HIP] = 668;
+    joint_degrees[AX_ID_RIGHT_FOOT_ROLL] = 5;
+    joint_degrees[AX_ID_RIGHT_FOOT_PITCH] = 0;
+    joint_degrees[AX_ID_RIGHT_KNEE] = 0;
+    joint_degrees[AX_ID_RIGHT_THIGH_ROLL] = 5;
+    joint_degrees[AX_ID_RIGHT_THIGH_PITCH] = 0;
+    joint_degrees[AX_ID_RIGHT_HIP] = -45;
 
-    motor_positions[AX_ID_LEFT_FOOT_ROLL] = 522;
-    motor_positions[AX_ID_LEFT_FOOT_PITCH] = 236;
-    motor_positions[AX_ID_LEFT_KNEE] = 517;
-    motor_positions[AX_ID_LEFT_THIGH_ROLL] = 520;
-    motor_positions[AX_ID_LEFT_THIGH_PITCH] = 498;
-    motor_positions[AX_ID_LEFT_HIP] = 350;
+    joint_degrees[AX_ID_LEFT_FOOT_ROLL] = -5;
+    joint_degrees[AX_ID_LEFT_FOOT_PITCH] = 0;
+    joint_degrees[AX_ID_LEFT_KNEE] = 0;
+    joint_degrees[AX_ID_LEFT_THIGH_ROLL] = -5;
+    joint_degrees[AX_ID_LEFT_THIGH_PITCH] = 0;
+    joint_degrees[AX_ID_LEFT_HIP] = 45;
 }
 
 // Arguments:
@@ -185,7 +200,9 @@ void robot_stand()
 // Description:
 void robot_execute()
 {
-
+    for(int i = 0; i < 12; i++) {
+        write_position(joints[i], joint_degrees[joints[i]]);
+    }
 }
 
 int main()
@@ -196,36 +213,29 @@ int main()
         return -1;
     }
 
-    // // Initialize initial position of all motors.
-    // robot_stand();
-    // int motors[12] = {  AX_ID_RIGHT_FOOT_ROLL,
-    //                     AX_ID_RIGHT_FOOT_PITCH,
-    //                     AX_ID_RIGHT_KNEE,
-    //                     AX_ID_RIGHT_THIGH_ROLL,
-    //                     AX_ID_RIGHT_THIGH_PITCH,
-    //                     AX_ID_RIGHT_HIP,
-    //                     AX_ID_LEFT_FOOT_ROLL,
-    //                     AX_ID_LEFT_FOOT_PITCH,
-    //                     AX_ID_LEFT_KNEE,
-    //                     AX_ID_LEFT_THIGH_ROLL,
-    //                     AX_ID_LEFT_THIGH_PITCH,
-    //                     AX_ID_LEFT_HIP};
-    // for(int i = 0; i < 12; i++) {
-    //     enable_torque(motors[i]);
-    //     write_position(motors[i], motor_positions[motors[i]]);
-    // }
-    // for(int i = 0; i < 12; i++) {
-    //     int position = read_position(motors[i]);
-    //     printf("[Motor ID:%03d] Current Position:%03d\n", motors[i], position);
-    // }
-    // for(int i = 0; i < 12; i++) {
-    //     disable_torque(motors[i]);
-    // }
+    // Enable torque for all motors.
+    for(int i = 0; i < 12; i++) {
+        enable_torque(joints[i]);
+    }
 
-    // Tests for left foot pitch.
-    enable_torque(AX_ID_LEFT_FOOT_PITCH);
-    int position = read_position(AX_ID_LEFT_FOOT_PITCH);
-    printf("[Motor ID:%03d] Current Position:%03d\n", AX_ID_LEFT_FOOT_PITCH, position);
+    // Initialize position for all motors.
+    robot_straight();
+    robot_execute();
+
+    // Attempting to walk.
+    joint_degrees[AX_ID_RIGHT_THIGH_PITCH] = 45;
+    joint_degrees[AX_ID_RIGHT_KNEE] = 45;
+    robot_execute();
+
+    while (!getchar());
+
+    robot_straight();
+    robot_execute();
+
+    // Disable torque for all motors.
+    for(int i = 0; i < 12; i++) {
+        disable_torque(joints[i]);
+    }
 
     close_port();
     return 0;

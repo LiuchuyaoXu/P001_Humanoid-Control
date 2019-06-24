@@ -9,7 +9,6 @@
 
 // Evil global variables.
 int port_number = 0;
-int joint_degrees[20] = {};
 int joints[12] = {  AX_ID_RIGHT_FOOT_ROLL,
                     AX_ID_RIGHT_FOOT_PITCH,
                     AX_ID_RIGHT_KNEE,
@@ -22,6 +21,7 @@ int joints[12] = {  AX_ID_RIGHT_FOOT_ROLL,
                     AX_ID_LEFT_THIGH_ROLL,
                     AX_ID_LEFT_THIGH_PITCH,
                     AX_ID_LEFT_HIP};
+float joint_degrees[20] = {};
 
 // Arguments:
 // Return:      True if successful.
@@ -105,12 +105,12 @@ void disable_torque(int ax_id)
 //              Goal position in degrees.
 // Return:
 // Description: Set the goal position for the motor specifed.
-void write_position(int ax_id, int joint_degrees)
+void write_position(int ax_id, float joint_degrees)
 {
-    int motor_degrees = 150 - joint_degrees;
-    float position_float = motor_degrees / 300.0 * 1023.0;
-    int position = position_float;
-    write2ByteTxRx(port_number, AX_DEVICE_PROTOCOL, ax_id, AX_ADDR_GOAL_POSITION, position);
+    float motor_degrees = 150.0 - joint_degrees;
+    float position = motor_degrees / 300.0 * 1023.0;
+    int position_int = position;
+    write2ByteTxRx(port_number, AX_DEVICE_PROTOCOL, ax_id, AX_ADDR_GOAL_POSITION, position_int);
 
     check_error();
 }
@@ -180,19 +180,39 @@ void read_voltage()
 // Description:
 void robot_straight()
 {
-    joint_degrees[AX_ID_RIGHT_FOOT_ROLL] = 5;
+    joint_degrees[AX_ID_RIGHT_FOOT_ROLL] = 5.0;
     joint_degrees[AX_ID_RIGHT_FOOT_PITCH] = 0;
     joint_degrees[AX_ID_RIGHT_KNEE] = 0;
-    joint_degrees[AX_ID_RIGHT_THIGH_ROLL] = 5;
+    joint_degrees[AX_ID_RIGHT_THIGH_ROLL] = 5.0;
     joint_degrees[AX_ID_RIGHT_THIGH_PITCH] = 0;
-    joint_degrees[AX_ID_RIGHT_HIP] = -45;
+    joint_degrees[AX_ID_RIGHT_HIP] = -45.0;
 
-    joint_degrees[AX_ID_LEFT_FOOT_ROLL] = -5;
+    joint_degrees[AX_ID_LEFT_FOOT_ROLL] = -5.0;
     joint_degrees[AX_ID_LEFT_FOOT_PITCH] = 0;
     joint_degrees[AX_ID_LEFT_KNEE] = 0;
-    joint_degrees[AX_ID_LEFT_THIGH_ROLL] = -5;
+    joint_degrees[AX_ID_LEFT_THIGH_ROLL] = -5.0;
     joint_degrees[AX_ID_LEFT_THIGH_PITCH] = 0;
-    joint_degrees[AX_ID_LEFT_HIP] = 45;
+    joint_degrees[AX_ID_LEFT_HIP] = 45.0;
+}
+
+// Arguments:
+// Return:
+// Description:
+void robot_stand()
+{
+    joint_degrees[AX_ID_RIGHT_FOOT_ROLL] = 5.0;
+    joint_degrees[AX_ID_RIGHT_FOOT_PITCH] = -50.0;
+    joint_degrees[AX_ID_RIGHT_KNEE] = 100.0;
+    joint_degrees[AX_ID_RIGHT_THIGH_ROLL] = 5.0;
+    joint_degrees[AX_ID_RIGHT_THIGH_PITCH] = 60.0;
+    joint_degrees[AX_ID_RIGHT_HIP] = -45.0;
+
+    joint_degrees[AX_ID_LEFT_FOOT_ROLL] = -5.0;
+    joint_degrees[AX_ID_LEFT_FOOT_PITCH] = 50.0;
+    joint_degrees[AX_ID_LEFT_KNEE] = -100.0;
+    joint_degrees[AX_ID_LEFT_THIGH_ROLL] = -5.0;
+    joint_degrees[AX_ID_LEFT_THIGH_PITCH] = -60.0;
+    joint_degrees[AX_ID_LEFT_HIP] = 45.0;
 }
 
 // Arguments:
@@ -203,6 +223,17 @@ void robot_execute()
     for(int i = 0; i < 12; i++) {
         write_position(joints[i], joint_degrees[joints[i]]);
     }
+}
+
+// Arguments:
+// Return:
+// Description:
+void robot_walk_forward()
+{
+    // Attempting to walk.
+    joint_degrees[AX_ID_RIGHT_THIGH_PITCH] = 45.0;
+    joint_degrees[AX_ID_RIGHT_KNEE] = 45.0;
+    robot_execute();
 }
 
 int main()
@@ -218,19 +249,10 @@ int main()
         enable_torque(joints[i]);
     }
 
-    // Initialize position for all motors.
-    robot_straight();
-    robot_execute();
-
-    // Attempting to walk.
-    joint_degrees[AX_ID_RIGHT_THIGH_PITCH] = 45;
-    joint_degrees[AX_ID_RIGHT_KNEE] = 45;
+    robot_stand();
     robot_execute();
 
     while (!getchar());
-
-    robot_straight();
-    robot_execute();
 
     // Disable torque for all motors.
     for(int i = 0; i < 12; i++) {

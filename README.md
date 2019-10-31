@@ -1,6 +1,3 @@
-# Project_001_Humanoid-Control
+# P001_Humanoid-Control
 
-To do:\
-	Check motor clockwise and anti-clockwise angle limit.\
-	Refine macros.\
-	Change motor ID macros from number to robot body joints.\
+The team has decided to join another competition instead, this repository will no longer be updated.
